@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading DELFI...</title>
+</head>
+<body>
+
+<script>
+const patientId = "{{ patient_id }}";
+
+// Step 1: go to DELFI in SAME TAB
+window.location.href = "{{ delfi_url }}";
+
+// Step 2: wait for DELFI to load, then inject
+function waitForDELFI() {
+
+    const interval = setInterval(() => {
+
+        const el = document.querySelector("#search_bar");
+
+        if (el && window.browser_tools) {
+
+            clearInterval(interval);
+
+            // inject value
+            el.value = patientId;
+
+            // enable search system
+            browser_tools.enable_search($("#search_bar"));
+
+            // trigger search (your discovered API)
+            browser_tools.search_from_url();
+        }
+
+    }, 300);
+}
+
+// delay to allow DELFI to load fully
+setTimeout(waitForDELFI, 2000);
+
+</script>
+
+</body>
+</html>
