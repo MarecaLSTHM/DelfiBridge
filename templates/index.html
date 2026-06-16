@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Opening DELFI...</title>
+</head>
+<body>
+
+<h3>Loading patient {{ patient_id }}...</h3>
+
+<script>
+const patientId = "{{ patient_id }}";
+const delfiUrl = "{{ delfi_url }}";
+
+// Open DELFI in a new tab
+const delfiWindow = window.open(delfiUrl, "_blank");
+
+function waitForDELFIReady(callback) {
+
+    const interval = setInterval(() => {
+
+        try {
+            if (!delfiWindow || delfiWindow.closed) {
+                clearInterval(interval);
+                return;
+            }
+
+            const w = delfiWindow;
+
+            // WAIT FOR FULL INTERNAL INITIALISATION
+            const ready =
+                w.browser_tools &&
+                w.$ &&
+                w.document &&
+                w.document.querySelector("#search_bar");
+
+            if (ready) {
+                clearInterval(interval);
+                callback(w);
+            }
+
+        } catch (e) {
+            // Cross-window access may temporarily fail during load
+        }
+
+    }, 300);
+}
+
+waitForDELFIReady(function(w) {
+
+    const $ = w.$;
+    const searchBar = $("#search_bar");
+
+    if (!searchBar || searchBar.length === 0) return;
+
+    // 1. Enable DELFI search system
+    w.browser_tools.enable_search(searchBar);
+
+    // 2. Inject patient ID
+    searchBar.val(patientId);
+
+    // 3. Trigger DELFI search pipeline (from your code)
+    setTimeout(() => {
+        w.browser_tools.search_from_url();
+    }, 200);
+
+});
+</script>
+
+</body>
+</html>
