@@ -1,44 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Loading DELFI...</title>
-</head>
-<body>
-
 <script>
 const patientId = "{{ patient_id }}";
 
-// Step 1: go to DELFI in SAME TAB
+// Step 1: go to DELFI (same tab)
 window.location.href = "{{ delfi_url }}";
 
-// Step 2: wait for DELFI to load, then inject
-function waitForDELFI() {
+// Step 2: robust wait system
+function waitForDELFIReady() {
 
     const interval = setInterval(() => {
 
-        const el = document.querySelector("#search_bar");
+        const searchBar = document.querySelector("#search_bar");
 
-        if (el && window.browser_tools) {
+        const toolsReady =
+            window.browser_tools &&
+            typeof window.browser_tools.search_from_url === "function";
+
+        const $ready = typeof window.$ !== "undefined";
+
+        if (searchBar && toolsReady && $ready) {
 
             clearInterval(interval);
 
-            // inject value
-            el.value = patientId;
+            console.log("DELFI ready - injecting patient");
 
-            // enable search system
-            browser_tools.enable_search($("#search_bar"));
+            // Fill search bar
+            searchBar.value = patientId;
 
-            // trigger search (your discovered API)
-            browser_tools.search_from_url();
+            // Enable search system safely
+            try {
+                window.browser_tools.enable_search($("#search_bar"));
+            } catch (e) {
+                console.warn("enable_search failed", e);
+            }
+
+            // Trigger search
+            try {
+                window.browser_tools.search_from_url();
+            } catch (e) {
+                console.warn("search_from_url failed", e);
+            }
         }
 
     }, 300);
 }
 
-// delay to allow DELFI to load fully
-setTimeout(waitForDELFI, 2000);
-
+// Wait a bit for app shell to initialize first
+setTimeout(waitForDELFIReady, 2500);
 </script>
-
-</body>
-</html>
