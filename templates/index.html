@@ -68,3 +68,39 @@ waitForDELFIReady(function(w) {
 
 </body>
 </html>
+
+
+(function () {
+
+    function getPatientFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("inject_patient");
+    }
+
+    function runSearch(patientId) {
+        if (!patientId) return;
+
+        const interval = setInterval(() => {
+
+            const searchBar = document.querySelector("#search_bar");
+
+            if (searchBar && window.browser_tools && window.$) {
+
+                clearInterval(interval);
+
+                const $ = window.$;
+
+                browser_tools.enable_search($("#search_bar"));
+
+                $("#search_bar").val(patientId);
+
+                browser_tools.search_from_url();
+            }
+
+        }, 300);
+    }
+
+    const patientId = getPatientFromURL();
+    runSearch(patientId);
+
+})();
