@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
-DELFI_URL = "https://cloud.cad4tb.care/winny-solutions/thi-ctb-1196/series/"
+DELFI_URL = "https://southsfrica.cad4tb.care/winny-solutions/ahri/series/"
 
 @app.route("/delfi")
 def delfi():

@@ -1,7 +1,7 @@
 from playwright.sync_api import sync_playwright
 import time
 
-DELFI_URL = "https://cloud.cad4tb.care/winny-solutions/thi-ctb-1196/series/"  # change to real URL
+DELFI_URL = "https://southsfrica.cad4tb.care/winny-solutions/ahri/series/"  # change to real URL
 
 def run_delfi_search(patient_id: str):
 
