@@ -8,7 +8,7 @@ def run_delfi_search(patient_id: str):
     with sync_playwright() as p:
 
         browser = p.chromium.launch(
-            headless=False,   # IMPORTANT: set True in production if needed
+            headless=True,   # IMPORTANT: set True in production if needed
             slow_mo=200
         )
 
